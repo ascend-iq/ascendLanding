@@ -12,6 +12,20 @@ import { ArrowRight, ArrowLeft, Check, CheckCircle, Loader2, AlertCircle, Extern
 // ─── Program data (replace with CMS / DB later) ───────────────────────────
 const PROGRAMS = [
   {
+    id: "ascendiq-bootcamp",
+    name: "AscendIQ Bootcamp",
+    cohort: "Spring 2026",
+    startDate: "Spring 2026",
+    duration: "12 weeks · 2 sessions/week",
+    ageRange: "Ages 14–22",
+    spotsLeft: 15,
+    price: 150000, // $1500 in cents
+    priceDisplay: "$1,500",
+    description:
+      "Build and launch a real venture. Develop the execution, initiative, and problem-solving skills that remain quintessentially human in the age of automation.",
+    comingSoon: false,
+  },
+  {
     id: "startup-lab",
     name: "Entrepreneurship Training",
     cohort: "Spring 2026",
@@ -23,6 +37,7 @@ const PROGRAMS = [
     priceDisplay: "$499",
     description:
       "Build and launch a real venture. Develop the execution, initiative, and problem-solving skills that remain quintessentially human in the age of automation.",
+    comingSoon: true,
   },
   {
     id: "skills-internships",
@@ -36,6 +51,7 @@ const PROGRAMS = [
     priceDisplay: "$349",
     description:
       "Gain hands-on expertise through technical training and apprenticeship pathways. Build a portfolio that stands out when entry-level roles are scarce.",
+    comingSoon: true,
   },
   {
     id: "career-training",
@@ -49,6 +65,7 @@ const PROGRAMS = [
     priceDisplay: "$599",
     description:
       "Structured transition from training to high-impact employment. Paired with a mentor from your target industry, plus career mapping and interview prep.",
+    comingSoon: true,
   },
 ]
 
@@ -124,9 +141,13 @@ function ProgramStep({
         {PROGRAMS.map((program) => (
           <button
             key={program.id}
-            onClick={() => onSelect(program)}
+            type="button"
+            onClick={() => !program.comingSoon && onSelect(program)}
+            disabled={program.comingSoon}
             className={`w-full text-left rounded-lg border p-6 transition-all duration-200 ${
-              selected?.id === program.id
+              program.comingSoon
+                ? "border-border bg-muted/50 cursor-not-allowed opacity-75"
+                : selected?.id === program.id
                 ? "border-primary bg-primary/[0.04] ring-1 ring-primary/30"
                 : "border-border bg-card hover:border-primary/30"
             }`}
@@ -135,10 +156,16 @@ function ProgramStep({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 flex-wrap mb-1">
                   <h2 className="font-semibold text-foreground">{program.name}</h2>
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                    {program.cohort}
-                  </span>
-                  {program.spotsLeft <= 5 && (
+                  {program.comingSoon ? (
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                      Coming Soon
+                    </span>
+                  ) : (
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                      {program.cohort}
+                    </span>
+                  )}
+                  {!program.comingSoon && program.spotsLeft <= 5 && (
                     <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
                       {program.spotsLeft} spots left
                     </span>

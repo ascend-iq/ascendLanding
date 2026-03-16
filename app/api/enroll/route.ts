@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { SquareClient, SquareEnvironment } from "square"
+import { saveEnrollment } from "@/lib/enrollments-db"
 
 const client = new SquareClient({
   token: process.env.SQUARE_ACCESS_TOKEN ?? "",
@@ -33,6 +34,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing required fields." }, { status: 422 })
   }
 
+  // Only AscendIQ Bootcamp is currently open for enrollment
+  if (programId !== "ascendiq-bootcamp") {
+    return NextResponse.json(
+      { error: "This program is not currently open for enrollment." },
+      { status: 400 }
+    )
+  }
+
+  // Enforce correct amount for AscendIQ Bootcamp ($1500)
+  const EXPECTED_CENTS = 150_000
+  if (amount !== EXPECTED_CENTS) {
+    return NextResponse.json(
+      { error: "Invalid amount. AscendIQ Bootcamp is $1,500 per student." },
+      { status: 400 }
+    )
+  }
+
   try {
     const response = await client.payments.create({
       sourceId,
@@ -48,6 +66,24 @@ export async function POST(req: NextRequest) {
     })
 
     const payment = response.payment
+
+    // ── Save to DynamoDB ──────────────────────────────────────────────────
+    try {
+      await saveEnrollment({
+        name,
+        email,
+        phone: phone ?? "",
+        studentName: studentName ?? "",
+        programId,
+        programName: programName ?? "",
+        amountCents: amount,
+        squarePaymentId: payment?.id ?? "",
+        receiptUrl: payment?.receiptUrl,
+      })
+    } catch (dbErr) {
+      console.error("DynamoDB enrollment save failed:", dbErr)
+      // Payment succeeded — don't fail the response; enrollment is in Square
+    }
 
     // ── Notify LMS to create student account ───────────────────────────────
     const lmsUrl = process.env.LMS_INTERNAL_URL
