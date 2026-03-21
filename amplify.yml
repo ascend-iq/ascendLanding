@@ -8,6 +8,18 @@ frontend:
         - pnpm install
     build:
       commands:
+        - echo "SQUARE_ACCESS_TOKEN=$SQUARE_ACCESS_TOKEN" >> .env.production
+        - echo "SQUARE_ENVIRONMENT=$SQUARE_ENVIRONMENT" >> .env.production
+        - echo "SQUARE_LOCATION_ID=$SQUARE_LOCATION_ID" >> .env.production
+        - echo "SQUARE_WEBHOOK_SIGNATURE_KEY=$SQUARE_WEBHOOK_SIGNATURE_KEY" >> .env.production
+        - echo "DYNAMODB_REGION=$DYNAMODB_REGION" >> .env.production
+        - echo "DYNAMODB_ENROLLMENTS_TABLE=$DYNAMODB_ENROLLMENTS_TABLE" >> .env.production
+        - echo "DYNAMODB_ACCESS_KEY_ID=$DYNAMODB_ACCESS_KEY_ID" >> .env.production
+        - echo "DYNAMODB_SECRET_ACCESS_KEY=$DYNAMODB_SECRET_ACCESS_KEY" >> .env.production
+        - echo "RESEND_API_KEY=$RESEND_API_KEY" >> .env.production
+        - echo "RESEND_AUDIENCE_ID=$RESEND_AUDIENCE_ID" >> .env.production
+        - echo "CONTACT_EMAIL_TO=$CONTACT_EMAIL_TO" >> .env.production
+        - echo "CONTACT_EMAIL_FROM=AscendIQ <onboarding@resend.dev>" >> .env.production
         - pnpm run build
   artifacts:
     baseDirectory: .next
