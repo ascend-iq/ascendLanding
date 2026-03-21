@@ -2,13 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { SquareClient, SquareEnvironment } from "square"
 import { saveEnrollment } from "@/lib/enrollments-db"
 
-const client = new SquareClient({
-  token: process.env.SQUARE_ACCESS_TOKEN ?? "",
-  environment:
-    process.env.SQUARE_ENVIRONMENT === "production"
-      ? SquareEnvironment.Production
-      : SquareEnvironment.Sandbox,
-})
 
 function getBaseUrl(req: NextRequest): string {
   const host = req.headers.get("host") ?? "localhost:3000"
@@ -152,6 +145,13 @@ export async function POST(req: NextRequest) {
     const redirectUrl = `${baseUrl}/enroll/success?enrollmentId=${enrollmentId}`
 
     // 2. Create Square-hosted payment link (CreatePaymentLink / quick pay)
+    const client = new SquareClient({
+      token: process.env.SQUARE_ACCESS_TOKEN ?? "",
+      environment:
+        process.env.SQUARE_ENVIRONMENT === "production"
+          ? SquareEnvironment.Production
+          : SquareEnvironment.Sandbox,
+    })
     const response = await client.checkout.paymentLinks.create({
       idempotencyKey: crypto.randomUUID(),
       quickPay: {

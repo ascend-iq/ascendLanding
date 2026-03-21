@@ -2,13 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { SquareClient, SquareEnvironment } from "square"
 import { getEnrollment, updateEnrollment } from "@/lib/enrollments-db"
 
-const client = new SquareClient({
-  token: process.env.SQUARE_ACCESS_TOKEN ?? "",
-  environment:
-    process.env.SQUARE_ENVIRONMENT === "production"
-      ? SquareEnvironment.Production
-      : SquareEnvironment.Sandbox,
-})
 
 export async function POST(req: NextRequest) {
   let body: { enrollmentId?: string; orderId?: string }
@@ -44,6 +37,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Retrieve order from Square to get payment_id
+    const client = new SquareClient({
+      token: process.env.SQUARE_ACCESS_TOKEN ?? "",
+      environment:
+        process.env.SQUARE_ENVIRONMENT === "production"
+          ? SquareEnvironment.Production
+          : SquareEnvironment.Sandbox,
+    })
     const orderRes = await client.orders.get({ orderId })
     const order = orderRes.body.order
 

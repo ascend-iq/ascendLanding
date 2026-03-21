@@ -2,13 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { SquareClient, SquareEnvironment } from "square"
 import { saveEnrollment } from "@/lib/enrollments-db"
 
-const client = new SquareClient({
-  token: process.env.SQUARE_ACCESS_TOKEN ?? "",
-  environment:
-    process.env.SQUARE_ENVIRONMENT === "production"
-      ? SquareEnvironment.Production
-      : SquareEnvironment.Sandbox,
-})
 
 export async function POST(req: NextRequest) {
   let body: {
@@ -109,6 +102,13 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  const client = new SquareClient({
+    token: process.env.SQUARE_ACCESS_TOKEN ?? "",
+    environment:
+      process.env.SQUARE_ENVIRONMENT === "production"
+        ? SquareEnvironment.Production
+        : SquareEnvironment.Sandbox,
+  })
   try {
     const response = await client.payments.create({
       sourceId,

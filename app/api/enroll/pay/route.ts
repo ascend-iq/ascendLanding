@@ -2,13 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { SquareClient, SquareEnvironment } from "square"
 import { saveEnrollment, updateEnrollment } from "@/lib/enrollments-db"
 
-const client = new SquareClient({
-  token: process.env.SQUARE_ACCESS_TOKEN ?? "",
-  environment:
-    process.env.SQUARE_ENVIRONMENT === "production"
-      ? SquareEnvironment.Production
-      : SquareEnvironment.Sandbox,
-})
 
 // ⚠️ TEST PRICES — all programs temporarily set to $1.00 for end-to-end testing.
 // Restore real prices before going live:
@@ -205,6 +198,13 @@ async function handlePay(req: NextRequest) {
   }
 
   // 2. Charge the card
+  const client = new SquareClient({
+    token: process.env.SQUARE_ACCESS_TOKEN ?? "",
+    environment:
+      process.env.SQUARE_ENVIRONMENT === "production"
+        ? SquareEnvironment.Production
+        : SquareEnvironment.Sandbox,
+  })
   try {
     const paymentRes = await client.payments.create({
       sourceId,
