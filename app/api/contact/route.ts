@@ -1,10 +1,18 @@
-import { Resend } from "resend"
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses"
 import { NextRequest, NextResponse } from "next/server"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
-const FROM_EMAIL = process.env.CONTACT_EMAIL_FROM ?? "AscendIQ <onboarding@resend.dev>"
+const FROM_EMAIL = process.env.CONTACT_EMAIL_FROM ?? "AscendIQ <onboarding@ascendiq.com>"
 const TO_EMAIL = process.env.CONTACT_EMAIL_TO ?? "team@ascendiq.com"
+
+const sesClient = new SESClient({
+  region: process.env.SES_REGION ?? "us-east-1",
+  ...(process.env.AWS_ACCESS_KEY_ID && {
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    },
+  }),
+})
 
 const AUDIENCE_LABELS: Record<string, string> = {
   school: "School / District",
@@ -12,11 +20,16 @@ const AUDIENCE_LABELS: Record<string, string> = {
   employer: "Employer / Industry Partner",
 }
 
-// Per-audience Resend lists — falls back to general RESEND_AUDIENCE_ID
-const AUDIENCE_ID_MAP: Record<string, string | undefined> = {
-  school: process.env.RESEND_AUDIENCE_ID_SCHOOLS,
-  parent: process.env.RESEND_AUDIENCE_ID_PARENTS,
-  employer: process.env.RESEND_AUDIENCE_ID_EMPLOYERS,
+async function sendEmail(to: string, from: string, subject: string, html: string, replyTo?: string) {
+  await sesClient.send(new SendEmailCommand({
+    Source: from,
+    Destination: { ToAddresses: [to] },
+    Message: {
+      Subject: { Data: subject, Charset: "UTF-8" },
+      Body: { Html: { Data: html, Charset: "UTF-8" } },
+    },
+    ...(replyTo && { ReplyToAddresses: [replyTo] }),
+  }))
 }
 
 export async function POST(req: NextRequest) {
@@ -52,7 +65,6 @@ export async function POST(req: NextRequest) {
     timeStyle: "short",
   })
 
-  // --- Notification email to team ---
   const notificationHtml = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; color: #111;">
       <div style="background: #111; padding: 24px 32px; border-radius: 8px 8px 0 0;">
@@ -97,7 +109,6 @@ export async function POST(req: NextRequest) {
     </div>
   `
 
-  // --- Confirmation email to submitter ---
   const confirmationHtml = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; color: #111;">
       <div style="background: #111; padding: 24px 32px; border-radius: 8px 8px 0 0;">
@@ -120,41 +131,26 @@ export async function POST(req: NextRequest) {
     </div>
   `
 
-  // Add to the matching Resend Audience (fire-and-forget)
-  const targetAudienceId =
-    (audience && AUDIENCE_ID_MAP[audience]) ?? process.env.RESEND_AUDIENCE_ID
-
-  if (targetAudienceId) {
-    const [firstName, ...rest] = name.trim().split(" ")
-    resend.contacts.create({
-      email,
-      firstName,
-      lastName: rest.join(" ") || undefined,
-      unsubscribed: false,
-      audienceId: targetAudienceId,
-    }).catch((err) => console.error("Resend audience sync failed:", err))
-  }
-
   try {
     await Promise.all([
-      resend.emails.send({
-        from: FROM_EMAIL,
-        to: TO_EMAIL,
-        replyTo: email,
-        subject: `[AscendIQ] ${audienceLabel}: ${subjectLine}`,
-        html: notificationHtml,
-      }),
-      resend.emails.send({
-        from: FROM_EMAIL,
-        to: email,
-        subject: "We got your message — AscendIQ",
-        html: confirmationHtml,
-      }),
+      sendEmail(
+        TO_EMAIL,
+        FROM_EMAIL,
+        `[AscendIQ] ${audienceLabel}: ${subjectLine}`,
+        notificationHtml,
+        email,
+      ),
+      sendEmail(
+        email,
+        FROM_EMAIL,
+        "We got your message — AscendIQ",
+        confirmationHtml,
+      ),
     ])
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error("Resend error:", err)
+    console.error("SES error:", err)
     return NextResponse.json(
       { error: "Failed to send. Please try again or email us directly." },
       { status: 500 }

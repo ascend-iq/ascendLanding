@@ -3,19 +3,11 @@ import { SquareClient, SquareEnvironment } from "square"
 import { saveEnrollment, updateEnrollment } from "@/lib/enrollments-db"
 
 
-// ⚠️ TEST PRICES — all programs temporarily set to $1.00 for end-to-end testing.
-// Restore real prices before going live:
-//   "ascendiq-bootcamp": 149_500
-//   "startup-lab":        49_900
-//   "skills-internships": 39_900
-//   "career-training":    59_900
-//   "test-payment":       100
 const PROGRAM_PRICES: Record<string, number> = {
-  "ascendiq-bootcamp": 100,
-  "startup-lab": 100,
-  "skills-internships": 100,
-  "career-training": 100,
-  "test-payment": 100,
+  "ascendiq-bootcamp": 149_500,
+  "startup-lab": 49_900,
+  "skills-internships": 39_900,
+  "career-training": 59_900,
 }
 
 const PROGRAM_NAMES: Record<string, string> = {
@@ -23,14 +15,11 @@ const PROGRAM_NAMES: Record<string, string> = {
   "startup-lab": "Entrepreneurship Training",
   "skills-internships": "Apprenticeship Skill Building",
   "career-training": "Mentoring & Coaching",
-  "test-payment": "Test Payment",
 }
 
-// "cart" = multi-program individual selection; "flex-bundle" = bundle picker
 const OPEN_PROGRAMS = [
   "ascendiq-bootcamp",
   "flex-bundle",
-  "test-payment",
   "startup-lab",
   "skills-internships",
   "career-training",
@@ -49,7 +38,6 @@ function computeAmount(
   }
   if (programId === "flex-bundle") {
     if (bundleSelections.length < 2) return null
-    // No bundle discount during $1 test period
     return bundleSelections.reduce((sum, id) => sum + (PROGRAM_PRICES[id] ?? 0), 0)
   }
   return PROGRAM_PRICES[programId] ?? null

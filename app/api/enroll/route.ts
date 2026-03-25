@@ -67,8 +67,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Only open programs accepted
-  // ⚠️ Remove "test-payment" after confirming Square works end-to-end
-  const OPEN_PROGRAMS = ["ascendiq-bootcamp", "flex-bundle", "test-payment"]
+  const OPEN_PROGRAMS = ["ascendiq-bootcamp", "flex-bundle"]
   if (!OPEN_PROGRAMS.includes(programId)) {
     return NextResponse.json(
       { error: "This program is not currently open for enrollment." },
@@ -90,13 +89,6 @@ export async function POST(req: NextRequest) {
     if (amount < MIN_BUNDLE_CENTS) {
       return NextResponse.json(
         { error: "Invalid amount. Flex Bundle starts at $1,499." },
-        { status: 400 }
-      )
-    }
-  } else if (programId === "test-payment") {
-    if (amount !== 1) {
-      return NextResponse.json(
-        { error: "Test payment must be exactly $0.01." },
         { status: 400 }
       )
     }

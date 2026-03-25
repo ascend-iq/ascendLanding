@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.700.0",
+    "@aws-sdk/client-ses": "^3.1015.0",
     "@aws-sdk/lib-dynamodb": "^3.700.0",
     "@hookform/resolvers": "^3.9.1",
     "@phosphor-icons/react": "^2.1.10",
@@ -60,7 +61,6 @@
     "react-hook-form": "^7.54.1",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.0",
-    "resend": "^6.9.3",
     "sonner": "^1.7.1",
     "square": "^44.0.1",
     "tailwind-merge": "^3.3.1",

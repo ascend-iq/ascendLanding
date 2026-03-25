@@ -20,26 +20,10 @@ import {
   CircleNotch,
   WarningCircle,
   ShoppingCart,
-  Flask,
 } from "@phosphor-icons/react"
 
 // ─── Program data ──────────────────────────────────────────────────────────
 const PROGRAMS = [
-  {
-    id: "test-payment",
-    phase: "TEST",
-    name: "⚠️ Test Payment – $1.00",
-    cohort: "Dev Only",
-    startDate: "N/A",
-    duration: "N/A",
-    ageRange: "N/A",
-    spotsLeft: 99,
-    price: 100,
-    priceDisplay: "$1.00",
-    description: "Dev-only test item. Charges $1.00 and runs through the full enrollment flow.",
-    comingSoon: false,
-    isBundle: false,
-  },
   {
     id: "ascendiq-bootcamp",
     phase: "DISCOVER",
@@ -108,8 +92,7 @@ const PROGRAMS = [
   },
 ]
 
-// Programs available in the Flex Bundle sub-selector (excludes test-payment)
-const BUNDLE_PROGRAMS = PROGRAMS.filter((p) => p.id !== "test-payment")
+const BUNDLE_PROGRAMS = PROGRAMS
 
 type Step = 1 | 2 | 3
 type SelectionMode = "individual" | "bundle"
@@ -164,8 +147,9 @@ const US_STATES = [
 ]
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
-function testTotalDisplay(itemCount: number) {
-  return `$${itemCount}.00`
+function formatCents(cents: number) {
+  const dollars = cents / 100
+  return dollars % 1 === 0 ? `$${dollars.toLocaleString()}` : `$${dollars.toLocaleString(undefined, { minimumFractionDigits: 2 })}`
 }
 
 // ─── Step indicator ────────────────────────────────────────────────────────
@@ -233,22 +217,18 @@ function CartSummary({
         <span className="text-sm font-semibold text-foreground">
           Cart ({total} {total === 1 ? "item" : "items"})
         </span>
-        <span className="ml-auto flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full font-medium">
-          <Flask className="size-3" />
-          Test mode · $1 per item
-        </span>
       </div>
       <ul className="space-y-2">
         {items.map((p) => (
           <li key={p.id} className="flex items-center justify-between text-sm">
             <span className="text-foreground">{p.name}</span>
-            <span className="text-amber-600 dark:text-amber-400 font-medium tabular-nums">$1.00</span>
+            <span className="text-primary font-medium tabular-nums">{p.priceDisplay}</span>
           </li>
         ))}
       </ul>
       <div className="mt-3 pt-3 border-t border-border flex justify-between text-sm font-semibold">
-        <span className="text-foreground">Test total</span>
-        <span className="text-primary">{testTotalDisplay(total)}</span>
+        <span className="text-foreground">Total</span>
+        <span className="text-primary">{formatCents(items.reduce((sum, p) => sum + p.price, 0))}</span>
       </div>
     </div>
   )
@@ -291,7 +271,6 @@ function ProgramStep({
       <div className="space-y-3 mb-6">
         {individualPrograms.map((program) => {
           const inCart = cartItems.includes(program.id)
-          const isTest = program.id === "test-payment"
 
           return (
             <div
@@ -327,13 +306,11 @@ function ProgramStep({
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground mb-2">{program.description}</p>
-                  {!isTest && (
-                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
-                      <span>📅 {program.startDate}</span>
-                      <span>⏱ {program.duration}</span>
-                      <span>👤 {program.ageRange}</span>
-                    </div>
-                  )}
+                  <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
+                    <span>📅 {program.startDate}</span>
+                    <span>⏱ {program.duration}</span>
+                    <span>👤 {program.ageRange}</span>
+                  </div>
                 </div>
 
                 <div className="shrink-0 flex flex-col items-end gap-2">
@@ -524,9 +501,8 @@ function InfoStep({
           <div className="font-medium text-foreground text-sm">
             {mode === "bundle" ? "Flex Bundle" : `Cart · ${items.length} program${items.length !== 1 ? "s" : ""}`}
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 font-medium">
-            <Flask className="size-3" />
-            Test total: {testTotalDisplay(items.length)}
+          <div className="text-xs text-primary font-medium">
+            {formatCents(items.reduce((sum, p) => sum + p.price, 0))}
           </div>
         </div>
         <div className="text-xs text-muted-foreground">
@@ -803,7 +779,7 @@ function PaymentStep({
       ? BUNDLE_PROGRAMS.filter((p) => bundleSelections.includes(p.id))
       : PROGRAMS.filter((p) => cartItems.includes(p.id))
 
-  const testTotal = testTotalDisplay(items.length)
+  const totalCents = items.reduce((sum, p) => sum + p.price, 0)
 
   useEffect(() => {
     let destroyed = false
@@ -916,7 +892,7 @@ function PaymentStep({
         {items.map((p) => (
           <div key={p.id} className="flex items-center justify-between text-sm">
             <span className="text-foreground">{p.name}</span>
-            <span className="text-amber-600 dark:text-amber-400 font-medium">$1.00 (test)</span>
+            <span className="text-primary font-medium">{p.priceDisplay}</span>
           </div>
         ))}
         <div className="border-t border-border pt-3 mt-3 flex justify-between text-sm">
@@ -926,19 +902,14 @@ function PaymentStep({
           </span>
         </div>
         <div className="flex justify-between text-sm font-semibold">
-          <span>Total (test)</span>
-          <span className="text-primary">{testTotal}</span>
+          <span>Total</span>
+          <span className="text-primary">{formatCents(totalCents)}</span>
         </div>
       </div>
 
       <h2 className="font-serif text-2xl sm:text-3xl tracking-tight text-foreground mb-6">
         Payment
       </h2>
-
-      <div className="mb-6 flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 px-3 py-2 rounded-md font-medium">
-        <Flask className="size-3.5 shrink-0" />
-        Test mode — your card will be charged {testTotal} (not the displayed program prices)
-      </div>
 
       {/* Square embedded card form */}
       <div className="mb-2">
@@ -993,7 +964,7 @@ function PaymentStep({
               Processing…
             </>
           ) : (
-            `Pay ${testTotal} (test)`
+            `Pay ${formatCents(totalCents)}`
           )}
         </Button>
       </div>
