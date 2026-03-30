@@ -10,7 +10,17 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(xargs grep:*)",
+      "Bash(grep -r \"TeamMemberCard\\\\|team\\\\|mentor\" /c/Users/aravb/desktop/code/ascend/ascendLanding/components --include=*.tsx --include=*.ts)",
+      "Bash(python3 -c \":*)",
+      "Bash(npx -y xlsx-cli \"/c/Users/aravb/Downloads/Org Chart.xlsx\")",
+      "Bash(python -c \":*)",
+      "Bash(unzip:*)",
+      "Bash(magick --version)",
+      "Bash(convert --version)",
+      "Bash(python -c \"from PIL import Image; print\\(''Pillow available''\\)\")",
+      "Bash(python:*)"
     ]
   }
 }
