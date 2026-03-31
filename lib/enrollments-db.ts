@@ -13,7 +13,7 @@ const client = new DynamoDBClient({
       },
     }),
 })
-
+//test comment
 const docClient = DynamoDBDocumentClient.from(client)
 
 export type EnrollmentRecord = {
