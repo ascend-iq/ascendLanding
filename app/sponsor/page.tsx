@@ -72,7 +72,7 @@ export default function SponsorPage() {
                 duration={0.6}
                 className="h-full"
               >
-                <div className="flex flex-col h-full rounded-lg border border-border bg-card p-6 lg:p-8">
+                <div className="flex flex-col h-full rounded-lg border border-border bg-card p-5 sm:p-6 lg:p-8">
                   <div className="flex items-center gap-2 mb-4">
                     <Lightning className="size-5 text-primary" />
                     <span className="font-semibold text-lg text-foreground">{tier.name}</span>

@@ -58,7 +58,7 @@ export function PillarsSection() {
                   </div>
                   
                   {/* Content Card */}
-                  <div className="flex-1 bg-background border border-border shadow-sm rounded-xl p-8 lg:p-10 transition-all hover:border-primary/30 w-full group">
+                  <div className="flex-1 bg-background border border-border shadow-sm rounded-xl p-5 sm:p-8 lg:p-10 transition-all hover:border-primary/30 w-full group">
                     <h3 className="font-semibold text-2xl lg:text-3xl text-foreground leading-snug mb-4 group-hover:text-primary transition-colors">
                       {pillar.title}
                     </h3>

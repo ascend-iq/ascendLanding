@@ -47,7 +47,7 @@ export function NetworkSection() {
           {networkTypes.map((type) => (
             <div
               key={type.title}
-              className="group relative bg-background/5 border border-background/10 rounded-lg p-8 lg:p-10 hover:bg-background/10 transition-all duration-300"
+              className="group relative bg-background/5 border border-background/10 rounded-lg p-5 sm:p-8 lg:p-10 hover:bg-background/10 transition-all duration-300"
             >
               <div className="mb-6 inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary/20">
                 <type.icon className="size-6 text-primary" />

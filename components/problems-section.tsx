@@ -34,7 +34,7 @@ export function ProblemsSection() {
           </AnimatedContent>
 
           <AnimatedContent direction="horizontal" distance={40} duration={0.6} delay={0.2}>
-            <div className="bg-muted/40 p-8 lg:p-10 rounded-2xl border border-border shadow-sm">
+            <div className="bg-muted/40 p-5 sm:p-8 lg:p-10 rounded-2xl border border-border shadow-sm">
               <h3 className="font-semibold text-xl mb-6 flex items-center gap-2">
                 <Warning className="w-6 h-6 text-amber-500" weight="fill" />
                 Current Shortfalls

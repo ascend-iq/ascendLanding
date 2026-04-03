@@ -96,7 +96,7 @@ export function ContactSection() {
             </div>
           </div>
 
-          <div className="bg-background border border-border rounded-lg p-8 lg:p-10">
+          <div className="bg-background border border-border rounded-lg p-5 sm:p-8 lg:p-10">
             {status === "success" ? (
               <div className="flex flex-col items-center justify-center text-center h-full min-h-[320px] gap-4">
                 <CheckCircle className="size-12 text-primary" />

@@ -54,7 +54,7 @@ export function TrustSection() {
               duration={0.6}
               className="h-full"
             >
-              <div className="relative bg-card border border-border rounded-lg p-8 lg:p-10 h-full">
+              <div className="relative bg-card border border-border rounded-lg p-5 sm:p-8 lg:p-10 h-full">
                 <Quotes className="size-10 text-primary/30 mb-6" />
 
                 <blockquote className="text-lg text-foreground leading-relaxed mb-8">

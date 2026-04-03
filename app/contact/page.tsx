@@ -165,12 +165,12 @@ function ContactPageContent() {
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
 
           {/* Audience tabs */}
-          <div className="flex flex-wrap gap-2 mb-10">
+          <div className="flex flex-wrap gap-2 mb-10 -mx-1">
             {audienceTabs.map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
                 onClick={() => handleTabChange(key)}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium border transition-colors ${
                   audience === key
                     ? "bg-primary text-primary-foreground border-primary"
                     : "bg-background text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
@@ -192,7 +192,7 @@ function ContactPageContent() {
             {content.subtext}
           </p>
 
-          <div className="mt-12 bg-card border border-border rounded-lg p-8 lg:p-12">
+          <div className="mt-12 bg-card border border-border rounded-lg p-5 sm:p-8 lg:p-12">
             {status === "success" ? (
               <div className="flex flex-col items-center justify-center text-center min-h-[320px] gap-4 py-8">
                 <CheckCircle className="size-14 text-primary" />

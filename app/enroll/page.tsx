@@ -156,13 +156,13 @@ function formatCents(cents: number) {
 function StepIndicator({ current }: { current: Step }) {
   const steps = ["Choose Programs", "Your Info", "Payment"]
   return (
-    <div className="flex items-center gap-2 mb-12">
+    <div className="flex items-center justify-between sm:justify-start gap-1 sm:gap-2 mb-12">
       {steps.map((label, i) => {
         const n = (i + 1) as Step
         const done = current > n
         const active = current === n
         return (
-          <div key={label} className="flex items-center gap-2">
+          <div key={label} className="flex items-center gap-1.5 sm:gap-2">
             <div
               className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
                 done
@@ -175,14 +175,14 @@ function StepIndicator({ current }: { current: Step }) {
               {done ? <Check className="size-3.5" /> : n}
             </div>
             <span
-              className={`text-sm font-medium hidden sm:block ${
+              className={`text-xs sm:text-sm font-medium ${
                 active ? "text-foreground" : "text-muted-foreground"
               }`}
             >
               {label}
             </span>
             {i < steps.length - 1 && (
-              <div className={`h-px w-8 lg:w-16 mx-1 ${current > n ? "bg-primary" : "bg-border"}`} />
+              <div className={`h-px w-4 sm:w-8 lg:w-16 mx-0.5 sm:mx-1 ${current > n ? "bg-primary" : "bg-border"}`} />
             )}
           </div>
         )
@@ -283,7 +283,7 @@ function ProgramStep({
                   : "border-border bg-card"
               }`}
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
                     <h2 className="font-semibold text-foreground text-sm">{program.name}</h2>
@@ -313,17 +313,17 @@ function ProgramStep({
                   </div>
                 </div>
 
-                <div className="shrink-0 flex flex-col items-end gap-2">
+                <div className="shrink-0 flex flex-row sm:flex-col items-center sm:items-end gap-3 sm:gap-2">
                   {"priceOriginalDisplay" in program && program.priceOriginalDisplay ? (
-                    <div className="text-right">
-                      <div className="flex items-center gap-1.5 justify-end">
+                    <div className="text-left sm:text-right">
+                      <div className="flex items-center gap-1.5">
                         <span className="text-sm text-muted-foreground line-through">{program.priceOriginalDisplay}</span>
                         <span className="font-bold text-lg text-primary">{program.priceDisplay}</span>
                       </div>
                       <div className="text-xs text-primary font-medium">Limited-time</div>
                     </div>
                   ) : (
-                    <div className="text-right">
+                    <div className="text-left sm:text-right">
                       <div className="font-bold text-lg text-foreground">{program.priceDisplay}</div>
                       <div className="text-xs text-muted-foreground">per student</div>
                     </div>
@@ -362,7 +362,7 @@ function ProgramStep({
         }`}
         onClick={onBundleToggle}
       >
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
               <h2 className="font-semibold text-foreground text-sm">AscendIQ Flex Bundle</h2>
@@ -377,7 +377,7 @@ function ProgramStep({
               Select any 2 or 3 programs and save $100. Build the right combination across our full program suite.
             </p>
           </div>
-          <div className="shrink-0 text-right">
+          <div className="shrink-0 text-left sm:text-right">
             <div className="font-bold text-lg text-foreground">From $1,499</div>
             <div className="text-xs text-muted-foreground">per student</div>
           </div>
@@ -736,7 +736,7 @@ function InfoStep({
         </div>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <Button variant="outline" size="lg" onClick={onBack} className="h-12 px-6">
           Back
         </Button>
@@ -942,7 +942,7 @@ function PaymentStep({
         Your payment is processed securely by Square. We never store your card details.
       </p>
 
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <Button
           variant="outline"
           size="lg"

@@ -168,11 +168,11 @@ export default function ProgramsPage() {
                       <AccordionItem
                         id={program.id}
                         value={program.id}
-                        className="rounded-lg border border-border bg-card px-6 data-[state=open]:border-primary/40 data-[state=open]:bg-primary/[0.03] transition-colors scroll-mt-24"
+                        className="rounded-lg border border-border bg-card px-4 sm:px-6 data-[state=open]:border-primary/40 data-[state=open]:bg-primary/[0.03] transition-colors scroll-mt-24"
                       >
                     <AccordionTrigger className={accordionTriggerClass}>
                       <div className="flex items-start gap-4 w-full">
-                        <span className="font-bold tracking-tight text-4xl text-muted-foreground/40 shrink-0">
+                        <span className="font-bold tracking-tight text-2xl sm:text-4xl text-muted-foreground/40 shrink-0">
                           {program.number}
                         </span>
                         <div className="flex-1 min-w-0">
@@ -221,15 +221,17 @@ export default function ProgramsPage() {
                         </div>
                       </div>
 
-                      <div className="mt-8 pt-6 border-t border-border flex flex-wrap gap-4 items-center justify-between">
-                        <div className="text-muted-foreground text-sm">
+                      <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row flex-wrap gap-4 sm:items-center sm:justify-between">
+                        <div className="text-muted-foreground text-sm space-y-1 sm:space-y-0">
                           <span className="font-medium text-foreground">{program.details.duration}</span>
-                          {" · "}
+                          <span className="hidden sm:inline">{" · "}</span>
+                          <br className="sm:hidden" />
                           {program.details.format}
-                          {" · "}
+                          <span className="hidden sm:inline">{" · "}</span>
+                          <br className="sm:hidden" />
                           {program.details.ageRange}
                         </div>
-                        <div className="flex flex-wrap gap-3">
+                        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
                           {program.id === "career-training" ? (
                             <>
                               <Button asChild>
@@ -284,7 +286,7 @@ export default function ProgramsPage() {
           <AnimatedContent direction="vertical" distance={30} delay={0.3} duration={0.6}>
             <div className="mt-16 pt-12 border-t border-border">
               <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">Also available</p>
-              <div className="rounded-lg border border-border bg-card px-6 py-5 flex flex-wrap items-center justify-between gap-4">
+              <div className="rounded-lg border border-border bg-card px-4 sm:px-6 py-5 flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-between gap-4">
                 <div>
                   <h3 className="font-semibold text-lg text-foreground">AscendIQ Flex Bundle</h3>
                   <p className="text-sm text-muted-foreground mt-1">Combine 2–3 programs and save $100. Build the right pathway for your student.</p>

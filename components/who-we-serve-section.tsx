@@ -81,7 +81,7 @@ export function WhoWeServeSection() {
             {audiences.map((audience) => (
               <TabsContent key={audience.label} value={audience.label} className="outline-none">
                 <AnimatedContent direction="vertical" distance={20} duration={0.4}>
-                  <div className="flex flex-col md:flex-row bg-background border border-border shadow-sm rounded-xl p-8 lg:p-12 gap-8 items-center lg:items-start transition-all">
+                  <div className="flex flex-col md:flex-row bg-background border border-border shadow-sm rounded-xl p-6 sm:p-8 lg:p-12 gap-6 sm:gap-8 items-center md:items-start transition-all">
                     <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
                       <audience.icon className="h-8 w-8 text-primary" />
                     </div>
