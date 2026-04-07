@@ -28,55 +28,59 @@ export function Header() {
   )
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        <div className="flex lg:flex-1">
-          <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-2">
-            <Image src="/ascendiq-logo.png" alt="AscendIQ" width={48} height={48} className="h-10 sm:h-12 w-auto" />
-            <span className="font-bold text-lg sm:text-xl tracking-tight text-foreground">AscendIQ</span>
-          </Link>
-        </div>
-
-        {/* Mobile hamburger */}
-        <div className="flex lg:hidden">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center rounded-md p-2 text-foreground"
-            onClick={() => setMobileMenuOpen(true)}
-            aria-expanded={mobileMenuOpen}
-            aria-label="Open main menu"
-          >
-            <List className="size-6" aria-hidden="true" />
-          </button>
-        </div>
-
-        {/* Desktop nav */}
-        <div className="hidden lg:flex lg:gap-x-10">
-          {navLinks.map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-            >
-              {label}
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
+          <div className="flex lg:flex-1">
+            <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-2">
+              <Image src="/ascendiq-logo.png" alt="AscendIQ" width={48} height={48} className="h-10 sm:h-12 w-auto" />
+              <span className="font-bold text-lg sm:text-xl tracking-tight text-foreground">AscendIQ</span>
             </Link>
-          ))}
-        </div>
+          </div>
 
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
-            <Link href="/enroll">Enroll Now</Link>
-          </Button>
-        </div>
-      </nav>
+          {/* Mobile hamburger */}
+          <div className="flex lg:hidden">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center rounded-md p-2 text-foreground"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-expanded={mobileMenuOpen}
+              aria-label="Open main menu"
+            >
+              <List className="size-6" aria-hidden="true" />
+            </button>
+          </div>
 
-      {/* Mobile menu - always in DOM, toggled with CSS */}
+          {/* Desktop nav */}
+          <div className="hidden lg:flex lg:gap-x-10">
+            {navLinks.map(({ label, href }) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+
+          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+            <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Link href="/enroll">Enroll Now</Link>
+            </Button>
+          </div>
+        </nav>
+      </header>
+
+      {/* Mobile menu - rendered as sibling of <header> so backdrop-filter on the
+          header doesn't establish a containing block that clips the fixed panel */}
       <div
-        className={`lg:hidden fixed inset-0 z-[60] transition-visibility ${
-          mobileMenuOpen ? "visible" : "invisible pointer-events-none"
+        className={`lg:hidden fixed inset-0 z-[60] ${
+          mobileMenuOpen ? "" : "pointer-events-none"
         }`}
         aria-modal="true"
         role="dialog"
+        aria-hidden={!mobileMenuOpen}
       >
         {/* Backdrop */}
         <div
@@ -137,6 +141,6 @@ export function Header() {
           </div>
         </div>
       </div>
-    </header>
+    </>
   )
 }
