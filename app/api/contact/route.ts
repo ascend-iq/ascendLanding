@@ -1,17 +1,21 @@
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses"
+import nodemailer from "nodemailer"
 import { NextRequest, NextResponse } from "next/server"
 
-const FROM_EMAIL = process.env.CONTACT_EMAIL_FROM ?? "AscendIQ <onboarding@ascendiq.com>"
-const TO_EMAIL = process.env.CONTACT_EMAIL_TO ?? "team@ascendiq.com"
+const SMTP_HOST = process.env.SMTP_HOST ?? "smtp.gmail.com"
+const SMTP_PORT = Number(process.env.SMTP_PORT ?? 587)
+const SMTP_USER = process.env.SMTP_USER ?? ""
+const SMTP_PASS = process.env.SMTP_PASS ?? ""
+const FROM_EMAIL = process.env.CONTACT_EMAIL_FROM ?? `AscendIQ <${SMTP_USER}>`
+const TO_EMAILS = (process.env.CONTACT_EMAIL_TO ?? SMTP_USER)
+  .split(",")
+  .map((addr) => addr.trim())
+  .filter(Boolean)
 
-const sesClient = new SESClient({
-  region: process.env.SES_REGION ?? "us-east-1",
-  ...(process.env.AWS_ACCESS_KEY_ID && {
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-  }),
+const transporter = nodemailer.createTransport({
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  secure: SMTP_PORT === 465,
+  auth: { user: SMTP_USER, pass: SMTP_PASS },
 })
 
 const AUDIENCE_LABELS: Record<string, string> = {
@@ -20,16 +24,13 @@ const AUDIENCE_LABELS: Record<string, string> = {
   employer: "Employer / Industry Partner",
 }
 
-async function sendEmail(to: string, from: string, subject: string, html: string, replyTo?: string) {
-  await sesClient.send(new SendEmailCommand({
-    Source: from,
-    Destination: { ToAddresses: [to] },
-    Message: {
-      Subject: { Data: subject, Charset: "UTF-8" },
-      Body: { Html: { Data: html, Charset: "UTF-8" } },
-    },
-    ...(replyTo && { ReplyToAddresses: [replyTo] }),
-  }))
+function escapeHtml(input: string): string {
+  return input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
 }
 
 export async function POST(req: NextRequest) {
@@ -65,92 +66,80 @@ export async function POST(req: NextRequest) {
     timeStyle: "short",
   })
 
+  const safeName = escapeHtml(name)
+  const safeEmail = escapeHtml(email)
+  const safeOrg = organization ? escapeHtml(organization) : ""
+  const safeSubject = subject ? escapeHtml(subject) : ""
+  const safeMessage = escapeHtml(message)
+  const safeAudience = escapeHtml(audienceLabel)
+  const replyHref = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent("Re: " + subjectLine)}`
+
+  const labelStyle = "padding: 14px 0 14px; border-bottom: 1px solid #E2E8F0; width: 130px; color: #475569; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; vertical-align: top;"
+  const valueStyle = "padding: 14px 0 14px; border-bottom: 1px solid #E2E8F0; color: #0F172A; font-size: 15px; line-height: 1.5;"
+
   const notificationHtml = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; color: #111;">
-      <div style="background: #111; padding: 24px 32px; border-radius: 8px 8px 0 0;">
-        <h1 style="color: #fff; font-size: 20px; margin: 0;">New Contact Submission</h1>
-        <p style="color: #888; margin: 4px 0 0; font-size: 14px;">AscendIQ — ${timestamp}</p>
-      </div>
-      <div style="border: 1px solid #e5e7eb; border-top: none; padding: 32px; border-radius: 0 0 8px 8px;">
-        <table style="width: 100%; border-collapse: collapse;">
-          <tr>
-            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; width: 130px; color: #666; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Audience</td>
-            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 15px;">${audienceLabel}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Name</td>
-            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 15px;">${name}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Email</td>
-            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 15px;"><a href="mailto:${email}" style="color: #2563eb;">${email}</a></td>
-          </tr>
-          ${organization ? `
-          <tr>
-            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Organization</td>
-            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 15px;">${organization}</td>
-          </tr>` : ""}
-          ${subject ? `
-          <tr>
-            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Subject</td>
-            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 15px;">${subject}</td>
-          </tr>` : ""}
-          <tr>
-            <td style="padding: 10px 0; color: #666; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; vertical-align: top;">Message</td>
-            <td style="padding: 10px 0; font-size: 15px; line-height: 1.6; white-space: pre-wrap;">${message}</td>
-          </tr>
-        </table>
-        <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-          <a href="mailto:${email}?subject=Re: ${encodeURIComponent(subjectLine)}" style="display: inline-block; background: #111; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 500;">
-            Reply to ${name}
-          </a>
+    <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 620px; margin: 0 auto; background: #F8FAFC; padding: 32px 16px;">
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 5px; overflow: hidden;">
+        <div style="background: #3f5f76; padding: 32px;">
+          <p style="color: rgba(255,255,255,0.7); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; margin: 0 0 10px;">New Inquiry</p>
+          <h1 style="color: #FFFFFF; font-size: 22px; margin: 0; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3;">Contact Form Submission</h1>
+          <p style="color: rgba(255,255,255,0.7); margin: 8px 0 0; font-size: 13px;">${escapeHtml(timestamp)}</p>
+        </div>
+        <div style="padding: 32px;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="${labelStyle}">Audience</td>
+              <td style="${valueStyle}">${safeAudience}</td>
+            </tr>
+            <tr>
+              <td style="${labelStyle}">Name</td>
+              <td style="${valueStyle}">${safeName}</td>
+            </tr>
+            <tr>
+              <td style="${labelStyle}">Email</td>
+              <td style="${valueStyle}"><a href="mailto:${encodeURIComponent(email)}" style="color: #3f5f76; text-decoration: none; font-weight: 500;">${safeEmail}</a></td>
+            </tr>
+            ${safeOrg ? `
+            <tr>
+              <td style="${labelStyle}">Organization</td>
+              <td style="${valueStyle}">${safeOrg}</td>
+            </tr>` : ""}
+            ${safeSubject ? `
+            <tr>
+              <td style="${labelStyle}">Subject</td>
+              <td style="${valueStyle}">${safeSubject}</td>
+            </tr>` : ""}
+            <tr>
+              <td style="${labelStyle} border-bottom: none;">Message</td>
+              <td style="padding: 14px 0 0; color: #0F172A; font-size: 15px; line-height: 1.65; white-space: pre-wrap;">${safeMessage}</td>
+            </tr>
+          </table>
+          <div style="margin-top: 36px; padding-top: 24px; border-top: 1px solid #E2E8F0;">
+            <a href="${replyHref}" style="display: inline-block; background: #3f5f76; color: #FFFFFF; text-decoration: none; padding: 12px 24px; border-radius: 5px; font-size: 14px; font-weight: 500; letter-spacing: 0.01em;">
+              Reply to ${safeName}
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  `
-
-  const confirmationHtml = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; color: #111;">
-      <div style="background: #111; padding: 24px 32px; border-radius: 8px 8px 0 0;">
-        <h1 style="color: #fff; font-size: 22px; margin: 0;">Thanks for reaching out, ${name.split(" ")[0]}.</h1>
-      </div>
-      <div style="border: 1px solid #e5e7eb; border-top: none; padding: 32px; border-radius: 0 0 8px 8px;">
-        <p style="font-size: 16px; line-height: 1.6; margin: 0 0 16px;">
-          We received your message and will get back to you within <strong>24 hours</strong>.
-        </p>
-        <p style="font-size: 15px; color: #555; line-height: 1.6; margin: 0 0 28px;">
-          In the meantime, explore our programs at
-          <a href="https://ascendiq.com/programs" style="color: #2563eb;">ascendiq.com/programs</a>.
-        </p>
-        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
-        <p style="font-size: 13px; color: #888; margin: 0;">
-          AscendIQ — Preparing American workers for the technology-enabled economy.<br/>
-          You're receiving this because you submitted a contact form at ascendiq.com.
-        </p>
+      <div style="text-align: center; padding: 24px 16px 0; color: #94A3B8; font-size: 12px; line-height: 1.6;">
+        <p style="margin: 0;">AscendIQ &mdash; Preparing American workers for the technology-enabled economy.</p>
+        <p style="margin: 6px 0 0;">Sent from the contact form at <a href="https://ascendiq.work" style="color: #3f5f76; text-decoration: none;">ascendiq.work</a></p>
       </div>
     </div>
   `
 
   try {
-    await Promise.all([
-      sendEmail(
-        TO_EMAIL,
-        FROM_EMAIL,
-        `[AscendIQ] ${audienceLabel}: ${subjectLine}`,
-        notificationHtml,
-        email,
-      ),
-      sendEmail(
-        email,
-        FROM_EMAIL,
-        "We got your message — AscendIQ",
-        confirmationHtml,
-      ),
-    ])
+    await transporter.sendMail({
+      from: FROM_EMAIL,
+      to: TO_EMAILS,
+      subject: `[AscendIQ] ${audienceLabel}: ${subjectLine}`,
+      html: notificationHtml,
+      replyTo: email,
+    })
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error("SES error:", err)
+    console.error("SMTP error:", err)
     return NextResponse.json(
       { error: "Failed to send. Please try again or email us directly." },
       { status: 500 }
