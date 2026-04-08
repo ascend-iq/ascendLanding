@@ -106,7 +106,7 @@ function ContactPageContent() {
   const paramAudience = (searchParams.get("audience") ?? "") as AudienceKey
   const [audience, setAudience] = useState<AudienceKey>(paramAudience)
 
-  const content = (audience && audienceContent[audience]) ?? defaultContent
+  const content = (audience && audienceContent[audience]) || defaultContent
 
   const [formData, setFormData] = useState({
     name: "",
