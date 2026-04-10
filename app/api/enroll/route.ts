@@ -85,10 +85,10 @@ export async function POST(req: NextRequest) {
       )
     }
   } else if (programId === "flex-bundle") {
-    const MIN_BUNDLE_CENTS = 149_900
+    const MIN_BUNDLE_CENTS = 89_800
     if (amount < MIN_BUNDLE_CENTS) {
       return NextResponse.json(
-        { error: "Invalid amount. Flex Bundle starts at $1,499." },
+        { error: "Invalid amount. Flex Bundle starts at $898." },
         { status: 400 }
       )
     }

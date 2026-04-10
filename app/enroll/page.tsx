@@ -378,7 +378,7 @@ function ProgramStep({
             </p>
           </div>
           <div className="shrink-0 text-left sm:text-right">
-            <div className="font-bold text-lg text-foreground">From $1,499</div>
+            <div className="font-bold text-lg text-foreground">From $898</div>
             <div className="text-xs text-muted-foreground">per student</div>
           </div>
         </div>
@@ -426,7 +426,7 @@ function ProgramStep({
                 </span>
                 <span className="text-primary">
                   ${(Math.max(
-                    149900,
+                    89800,
                     bundleSelections.reduce((s, id) => s + (BUNDLE_PROGRAMS.find((p) => p.id === id)?.price ?? 0), 0) - 10000
                   ) / 100).toLocaleString("en-US", { minimumFractionDigits: 0 })}
                 </span>

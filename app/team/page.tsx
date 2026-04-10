@@ -23,7 +23,7 @@ const leadership = [
     bio: "Chaitali is a passionate entrepreneur at heart. A highly reputable finance, social impact, banking, and fintech executive -she is a leading expert in the sustainability sector; she founded Evergood, a sustainability and impact investing advisory firm, in 2017 to help investors and companies design sustainability strategies and frameworks. \n\nChaitali spent several years in the fintech sector as a go-to-market strategy expert; she led the B2B finance arm of Fundation Group, a New York-based financial technology firm as Head of Catalyst Solutions. During her banking tenure, she held senior executive positions at major financial institutions, including Bank of Hawaii, Zions Bancorp, PNC Bank, and HSBC Holdings. Her fifteen-plus years in the sector included extensive experience with business strategy, product management, bank operations, channel management, and financial reporting. She also served as Chief External Affairs Officer overseeing revenue development and external public and private sector relations functions at one of the nation’s largest military family advocacy organizations based in Washington, DC. Most recently, she served as Chief Impact Officer, leading impact investment strategy at 100 Women in Finance, a global association of women executives in asset management with 32 locations worldwide.\n\nChaitali holds a BBA in Finance from the University of North Texas, an executive certificate in Financial Planning from Georgetown University, and an MBA from the University of Utah’s Eccles School of Business. \n\nAs an entrepreneur, sustainability expert, and investor actively engaged in the academic community, she speaks and shares knowledge on business strategy, risk management, impact investing globally. She serves on the boards of commercial and social impact organizations around the world, including Hong Kong based HKmomtrepreneurs. She is also a member of the board executive committee and investment committee at UI Advisors, a donor-advised fund based in Utah.",
     email: "info@ascendiq.com",
     image: "/team/chaitali_patel.jpeg",
-    linkedin: "#",
+    linkedin: "https://www.linkedin.com/in/chai-patel-robinson/",
   },
   {
     name: "Aarav Patel",
@@ -32,7 +32,7 @@ const leadership = [
     bio: "Aarav Patel is an emerging entrepreneur and strategy-focused builder working at the intersection of finance, technology, and venture growth. As Head of Strategy within the Emerging Builders program, he focuses on translating innovative ideas into scalable businesses and sustainable revenue models. Aarav studies Finance and Statistics at Carnegie Mellon University’s Tepper School of Business, where his academic and professional interests center on enterprise software companies and how strategic finance can accelerate their growth.\n\nAarav has hands-on experience helping build and scale early-stage ventures. He worked on a pothole detection startup that developed hardware and data solutions to help municipalities identify infrastructure issues more efficiently, where he contributed to growth strategy, commercialization planning, and investor communication. He also worked on an RPA-driven automation venture focused on improving operational efficiency for organizations through workflow automation. Across both ventures, Aarav concentrated on market research, monetization strategy, and product positioning, helping translate technical innovation into clear economic value.\n\nIn addition to his entrepreneurial work, Aarav has gained experience in private equity where he supported investment research and evaluated strategies for scaling companies. He will be joining BNY Mellon as a Financial Analyst this summer and will join Barclays as an Investment Banking Analyst the following summer, further developing his expertise in strategic finance and capital markets.\n\nAarav builds because he enjoys transforming ambitious ideas into real systems that create value. He is motivated by helping innovative technology companies scale through disciplined strategy, strong financial foundations, and thoughtful execution.",
     email: "aarav@ascendiq.com",
     image: "/team/aarav_patel.jpg",
-    linkedin: "#",
+    linkedin: "https://www.linkedin.com/in/aaravpatel1/",
   },
   {
     name: "Arav Bhardwaj",
@@ -41,7 +41,7 @@ const leadership = [
     bio: "Arav is a technical visionary and former startup lead. He is architecting the next generation of learning platforms to ensure students are equipped with real-world technical proficiency and adaptive skills. His expertise lies in building robust, performant systems that scale with user needs while maintaining a premium user experience.",
     email: "arav@ascendiq.com",
     image: "/team/arav_bhardwaj.jpg",
-    linkedin: "#",
+    linkedin: "https://www.linkedin.com/in/aravbhardwaj/",
   },
 ]
 
