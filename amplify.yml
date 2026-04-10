@@ -25,6 +25,7 @@ frontend:
         - echo "CONTACT_EMAIL_TO=$CONTACT_EMAIL_TO" >> .env.production
         - echo "CONTACT_EMAIL_FROM=$CONTACT_EMAIL_FROM" >> .env.production
         - pnpm run build
+        - cp .env.production .next/.env.production
   artifacts:
     baseDirectory: .next
     files:
