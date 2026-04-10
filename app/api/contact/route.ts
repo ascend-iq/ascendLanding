@@ -7,6 +7,16 @@ const TO_EMAILS = (process.env.CONTACT_EMAIL_TO ?? "")
   .map((addr) => addr.trim())
   .filter(Boolean)
 
+// TEMPORARY diagnostic — remove after debugging
+export async function GET() {
+  const key = process.env.RESEND_API_KEY ?? ""
+  return NextResponse.json({
+    RESEND_API_KEY: key ? `${key.slice(0, 6)}...${key.slice(-4)} (${key.length} chars)` : "MISSING",
+    CONTACT_EMAIL_FROM: process.env.CONTACT_EMAIL_FROM ?? "MISSING",
+    CONTACT_EMAIL_TO: process.env.CONTACT_EMAIL_TO ?? "MISSING",
+  })
+}
+
 const AUDIENCE_LABELS: Record<string, string> = {
   school: "School / District",
   parent: "Parent / Guardian",
