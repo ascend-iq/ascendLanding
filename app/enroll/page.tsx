@@ -20,6 +20,7 @@ import {
   CircleNotch,
   WarningCircle,
   ShoppingCart,
+  CaretDown,
 } from "@phosphor-icons/react"
 
 // ─── Program data ──────────────────────────────────────────────────────────
@@ -772,6 +773,8 @@ function PaymentStep({
 }) {
   const [formStatus, setFormStatus] = useState<"initializing" | "ready" | "processing" | "load-error">("initializing")
   const [paymentError, setPaymentError] = useState("")
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [termsExpanded, setTermsExpanded] = useState(false)
   const cardRef = useRef<SquareCard | null>(null)
 
   const items =
@@ -942,6 +945,99 @@ function PaymentStep({
         Your payment is processed securely by Square. We never store your card details.
       </p>
 
+      {/* Participation Agreement */}
+      <div className="rounded-lg border border-border bg-card mb-6">
+        <button
+          type="button"
+          onClick={() => setTermsExpanded(!termsExpanded)}
+          className="w-full flex items-center justify-between px-5 py-4 text-left"
+        >
+          <span className="text-sm font-semibold text-foreground">
+            AscendIQ Program Participation Agreement
+          </span>
+          <CaretDown
+            className={`size-4 text-muted-foreground shrink-0 transition-transform duration-200 ${
+              termsExpanded ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        {termsExpanded && (
+          <div className="px-5 pb-5 border-t border-border">
+            <div className="max-h-72 overflow-y-auto pr-2 mt-4 space-y-4 text-xs text-muted-foreground leading-relaxed">
+              <section>
+                <h4 className="font-semibold text-foreground mb-1">1. Participation &amp; Program Environment</h4>
+                <p>I understand that my child will participate in the Motherboard / AscendIQ program, which includes collaboration with other students, instructors, staff, and guest speakers. Guest speakers and mentors may include adult professionals invited to share their experiences and provide educational guidance.</p>
+              </section>
+              <section>
+                <h4 className="font-semibold text-foreground mb-1">2. Supervision &amp; Student Responsibility</h4>
+                <p>I acknowledge that reasonable supervision will be provided; however, students are expected to conduct themselves responsibly, follow all program instructions, and contribute positively to the learning environment.</p>
+              </section>
+              <section>
+                <h4 className="font-semibold text-foreground mb-1">3. Media Release &amp; Use of Likeness</h4>
+                <p>I grant permission for my child&apos;s name, image, voice, and/or likeness to be photographed, recorded, or otherwise captured during the program. I understand that these materials may be used by Motherboard / AscendIQ for marketing, promotional, educational, and business purposes, including social media, websites, and printed materials, without compensation.</p>
+              </section>
+              <section>
+                <h4 className="font-semibold text-foreground mb-1">4. Technology &amp; Third-Party Platforms</h4>
+                <p>I understand that my child may use third-party tools (such as design platforms, communication tools, or website builders) during the program. I acknowledge that Motherboard / AscendIQ is not responsible for the policies, data handling, or actions of these external platforms.</p>
+              </section>
+              <section>
+                <h4 className="font-semibold text-foreground mb-1">5. Assumption of Risk</h4>
+                <p>I acknowledge that participation in the program involves general educational activities such as group work, discussions, and presentations. I voluntarily assume any risks associated with my child&apos;s participation, except where prohibited by law.</p>
+              </section>
+              <section>
+                <h4 className="font-semibold text-foreground mb-1">6. No Guarantee of Outcomes</h4>
+                <p>I understand that this program is educational in nature and does not guarantee specific outcomes, including but not limited to business success, financial results, internships, or future opportunities.</p>
+              </section>
+              <section>
+                <h4 className="font-semibold text-foreground mb-1">7. Release of Liability</h4>
+                <p>To the fullest extent permitted by law, I release and hold harmless Motherboard / AscendIQ, its founders, employees, contractors, mentors, and affiliates from any claims, liabilities, damages, or expenses arising from my child&apos;s participation in the program.</p>
+              </section>
+              <section>
+                <h4 className="font-semibold text-foreground mb-1">8. Emergency Contact &amp; Medical Responsibility</h4>
+                <p>I confirm that I am responsible for providing accurate emergency contact information and any relevant medical details. In the event of an emergency, program staff will attempt to contact me. I acknowledge that staff may take reasonable initial action if immediate care is required.</p>
+              </section>
+              <section>
+                <h4 className="font-semibold text-foreground mb-1">9. Refund &amp; Cancellation Policy</h4>
+                <p>Due to limited capacity and program planning requirements, all payments are final. Refunds will not be issued for cancellations, missed sessions, or early withdrawal. In cases of emergency or extenuating circumstances, requests may be reviewed at the sole discretion of Motherboard / AscendIQ. Motherboard / AscendIQ reserves the right to cancel, modify, or reschedule the program due to unforeseen circumstances. In such cases, participants may be offered a rescheduled session or partial/full refund.</p>
+              </section>
+              <section>
+                <h4 className="font-semibold text-foreground mb-1">10. Student Code of Conduct</h4>
+                <p className="mb-2">To maintain a high-quality and respectful environment, students are expected to:</p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>Treat all peers, instructors, and guest speakers with respect</li>
+                  <li>Actively participate in discussions, activities, and presentations</li>
+                  <li>Complete assigned work and contribute to team efforts</li>
+                  <li>Use technology only for program-related purposes during sessions</li>
+                  <li>Demonstrate professionalism during guest speaker sessions</li>
+                  <li>Maintain integrity in all work and interactions</li>
+                </ul>
+                <p className="mt-2">Failure to meet these expectations may result in verbal warning, parent/guardian notification, or removal from the program without refund.</p>
+              </section>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <label className="flex items-start gap-3 mb-6 cursor-pointer group">
+        <Checkbox
+          checked={agreedToTerms}
+          onCheckedChange={(v) => setAgreedToTerms(v === true)}
+          className="mt-0.5"
+        />
+        <span className="text-sm text-muted-foreground leading-snug select-none">
+          I, as the parent or legal guardian of the registered student, have read and agree to the{" "}
+          <button
+            type="button"
+            onClick={(e) => { e.preventDefault(); setTermsExpanded(true) }}
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+          >
+            AscendIQ Program Participation Agreement
+          </button>
+          , including all policies and expectations stated above.
+        </span>
+      </label>
+
       <div className="flex flex-col sm:flex-row gap-3">
         <Button
           variant="outline"
@@ -955,7 +1051,7 @@ function PaymentStep({
         <Button
           size="lg"
           onClick={handlePay}
-          disabled={formStatus !== "ready"}
+          disabled={formStatus !== "ready" || !agreedToTerms}
           className="h-12 px-8 flex-1 sm:flex-none"
         >
           {formStatus === "processing" ? (

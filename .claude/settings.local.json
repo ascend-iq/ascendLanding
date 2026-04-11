@@ -23,7 +23,10 @@
       "Bash(python:*)",
       "Bash(curl:*)",
       "Bash(node --env-file=.env scripts/test-smtp.mjs)",
-      "Bash(nslookup:*)"
+      "Bash(nslookup:*)",
+      "Bash(grep -r \"terms\\\\|agreement\\\\|accept\\\\|checkbox\" /c/Users/aravb/desktop/code/ascend/ascendLanding/app/enroll/ ! -path \"*/node_modules/*\")",
+      "Bash(grep -r \"modal\\\\|dialog\\\\|agreement\\\\|terms\" /c/Users/aravb/desktop/code/ascend/ascendLanding --include=\"*.tsx\" --include=\"*.ts\" ! -path \"*/node_modules/*\" ! -path \"*/.next/*\")",
+      "Bash(npx next:*)"
     ]
   }
 }
