@@ -114,6 +114,30 @@ const programs = [
       ],
     },
   },
+  {
+    id: "ai-toolkit-adults",
+    number: "05",
+    phase: "ADULTS",
+    title: "AI Toolkit for Adults",
+    tagline: "Learn AI by doing — not by watching.",
+    description: "A practical, no-jargon introduction to the AI tools reshaping how we work, create, and communicate. Three live Zoom sessions where adults build real slides, real spreadsheets, and real documents — guided by a live instructor every step of the way. No coding. No theory.",
+    details: {
+      duration: "3 sessions × 2 hours (6 hours total)",
+      format: "Live instructor-led Zoom + recordings",
+      ageRange: "Working adults · all backgrounds",
+      whatIncluded: [
+        "6 hours of live instruction across 3 sessions",
+        "Session recordings (90-day access) and resource guide PDF",
+        "Personalized AI Toolkit template + 30-day challenge",
+        "Certificate of completion",
+      ],
+      outcomes: [
+        "Confidently use ChatGPT, Claude, Gemini, and Copilot at work",
+        "Build slides, spreadsheets, docs, and images with AI in minutes",
+        "Walk away with a curated toolkit matched to your goals",
+      ],
+    },
+  },
 ]
 
 export default function ProgramsPage() {
@@ -232,7 +256,20 @@ export default function ProgramsPage() {
                           {program.details.ageRange}
                         </div>
                         <div className="flex flex-col sm:flex-row flex-wrap gap-3">
-                          {program.id === "career-training" ? (
+                          {program.id === "ai-toolkit-adults" ? (
+                            <>
+                              <Button asChild>
+                                <Link href="/programs/ai-toolkit-adults">
+                                  View Curriculum
+                                </Link>
+                              </Button>
+                              <Button asChild variant="outline">
+                                <Link href="/enroll?program=ai-toolkit-adults">
+                                  Enroll Now – $399
+                                </Link>
+                              </Button>
+                            </>
+                          ) : program.id === "career-training" ? (
                             <>
                               <Button asChild>
                                 <Link href="/enroll?program=career-training">
